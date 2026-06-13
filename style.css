@@ -49,9 +49,16 @@ body {
 }
 
 /* --- COMPREHENSIVE CLIPPING FIX FOR SCREEN --- */
+/* --- COMPREHENSIVE CLIPPING FIX FOR SCREEN --- */
 #screen {
     width: 100%;
-    height: 380px;                     /* Keeps it tightly within your canvas area */
+    
+    /* 1. SHIFT THE CEILING: Drops the box down so it physically starts below the text details */
+    margin-top: 105px;  
+    
+    /* 2. REBALANCE THE HEIGHT: Keeps it from stretching off the bottom of the card */
+    height: 335px;                    
+    
     overflow-y: auto;                  /* Vertical scrolling */
     -webkit-overflow-scrolling: touch;  /* Smooth mobile swiping */
     padding: 0 12px;                   /* Clean side margins */
@@ -59,15 +66,17 @@ body {
     position: relative;
 }
 
-/* New inner wrapper that handles flexible centering without browser bugs */
+/* Updated inner wrapper to keep content looking tight and clean */
 .screen-content {
     width: 100%;
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;           /* Centers short lists perfectly */
+    
+    /* 3. CLEAN UP PADDING: Everything pushes down naturally from our new safe ceiling */
+    justify-content: flex-start;          
     align-items: center;
-    padding: 15px 0;                   /* Safety padding at top and bottom */
+    padding: 10px 0 20px 0;           
     box-sizing: border-box;
 }
 
@@ -309,15 +318,22 @@ hr {
    LOADING SCREEN STYLES
    ======================================================= */
 
-/* Container centering the loader perfectly in your fixed screen space */
+/* Container centering the loader perfectly near the top of our screen space */
 .loader-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    
+    /* CHANGE THIS: Align to the top instead of the center */
+    justify-content: flex-start; 
     align-items: center;
+    
+    /* ADD THIS: Gives it a tiny bit of breathing room from the header text without pushing it down too far */
+    padding-top: 30px; 
+    
     height: 100%;
     width: 100%;
     animation: fadeIn 0.3s ease;
+    box-sizing: border-box;
 }
 
 /* Elegant spinning ring matching your sage green theme */
@@ -349,4 +365,13 @@ hr {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+.search-form-wrapper {
+    width: 100%;
+    padding-top: 60px !important; /* Decreased from 135px to lift the initial search view higher */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
 }
