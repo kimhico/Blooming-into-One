@@ -89,6 +89,7 @@ function renderSelectNameScreen(matches) {
         data-seats="${m.seats || ''}"
         data-companions="${m.companions || ''}"
         data-role="${m.role || ''}"
+        data-status="${m.status || ''}"
       >
       ${m.name}
     </label>
@@ -119,6 +120,7 @@ function renderResults(data) {
           data-seats="${m.seats || ''}"
           data-companions="${m.companions || ''}"
           data-role="${m.role || ''}"
+          data-status="${m.status || ''}"
         >
         ${m.name}
       </label>
@@ -152,7 +154,8 @@ function confirmName() {
     name: radio.value,
     seats: parseInt(radio.getAttribute("data-seats")) || 1,
     companions: radio.getAttribute("data-companions") || "",
-    role: radio.getAttribute("data-role") || "" 
+    role: radio.getAttribute("data-role") || "",
+    status: radio.getAttribute("data-status") || "" 
   };
 
   window.currentGuest = selected;
@@ -164,16 +167,43 @@ function confirmName() {
 
   window.tempCompanions = companions;
 
-  // Set the structural fallback reference logic pointer
+  // Set up back navigation checkpoint to return to name selection matching
   flowHistory = [() => renderSelectNameScreen(window.lastSearchResults)];
 
-  if (selected.seats > 1) {
+  // NEW CONDITION CHECK: If status exists in the sheet rows, route them to the Update alert prompt
+  if (selected.status && selected.status.trim() !== "") {
+    showUpdatePrompt();
+  } else {
+    proceedWithFlow();
+  }
+}
+
+// Separate helper to run your standard logic routing path cleanly
+function proceedWithFlow() {
+  if (window.currentGuest.seats > 1) {
     editCompanions(); 
   } else {
     window.currentGuest.companions = "";
     window.tempCompanions = [];
     showAttendanceQuestion();
   }
+}
+
+function showUpdatePrompt() {
+  let html = `
+    <div class="screen-content">
+      <h2>RSVP Already Found</h2>
+      <p style="color: #6b6b6b; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">
+        Hi <b>${window.currentGuest.name}</b>, we already have a saved response on file for you (${window.currentGuest.status}). 
+        <br><br>
+        Would you like to modify or update your details?
+      </p>
+      
+      <button onclick="proceedWithFlow()">Yes, Update Details</button>
+      <button class="back-btn" onclick="handleBack()">← No, Go Back</button>
+    </div>
+  `;
+  document.getElementById("screen").innerHTML = html;
 }
 
 function editCompanions() {
