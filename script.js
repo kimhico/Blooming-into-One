@@ -36,6 +36,19 @@ function showNameInput() {
 async function searchName() {
   const guestInput = document.getElementById("guest").value.trim();
   
+  // VALIDATION FIX: Restrain blank searches and prompt them to enter a name instead
+  if (!guestInput) {
+    document.getElementById("screen").innerHTML = `
+      <div class="search-form-wrapper">
+        <h2>Please enter your name</h2>
+        <p style="font-size: 13px; color: #6b6b6b; margin-bottom: 15px;">The search box cannot be left blank.</p>
+        <button onclick="showNameInput()">Try Again</button>
+      </div>
+    `;
+    return;
+  }
+  
+  // Trigger loading screen instantly if input validation passes
   showLoading("Searching list...");
 
   let response = await fetch(
